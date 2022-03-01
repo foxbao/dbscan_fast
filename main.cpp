@@ -44,7 +44,7 @@ float stringToFloat(const string &i)
     return score;
 }
 
-std::vector<std::pair<float, float>> openFile(char *filename)
+std::vector<std::vector<float>> openFile(char *filename)
 {
     // std::vector<vec3f> dataset;
     using namespace std;
@@ -55,18 +55,17 @@ std::vector<std::pair<float, float>> openFile(char *filename)
         cout << "Open File Failed!" << endl;
     }
 
-    int i = 1;
     int idx_pt = 0;
-    std::vector<std::pair<float, float>> dataset;
+    std::vector<std::vector<float>> dataset;
     while (!file.eof())
     {
         string temp;
         file >> temp;
         std::vector<std::string> resVec = splitWithStl(temp, ",");
         stringToFloat(resVec[0]);
-        std::pair<float, float> data;
-        data.first = stringToFloat(resVec[0]);
-        data.second = stringToFloat(resVec[1]);
+        std::vector<float> data;
+        data.push_back(stringToFloat(resVec[0]));
+        data.push_back(stringToFloat(resVec[1]));
         dataset.push_back(data);
     }
     file.close();
@@ -79,17 +78,9 @@ int main(int argc, char *argv[])
 
     int minPoints = 4;
     float epsilon = 40;
-    std::vector<std::pair<float, float>> data;
-    std::pair<float, float> data1;
+    std::vector<std::vector<float>> data;
 
     data = openFile("feature.txt");
-    // data1.first=100;
-    // data1.second=100;
-    // data.push_back(data1);
-    // std::pair<float,float> data2;
-    // data1.first=200;
-    // data1.second=100;
-    // data.push_back(data2);
     struct timeval t1, t2;
     for (int i = 0; i < 10; i++)
     {
@@ -99,8 +90,6 @@ int main(int argc, char *argv[])
         double deltaT = (t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec;
         std::cout << "time_comsumed:" << deltaT / 1000000 << std::endl;
     }
-
-    // std::vector<std::vector<unsigned long>> iClusters = dbscan::cluster(points, epsilon, minPoints);
 
     return 0;
 }

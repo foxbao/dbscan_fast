@@ -4,8 +4,8 @@
 // And this is the "dataset to kd-tree" adaptor class:
 struct adaptor
 {
-    const std::vector<std::pair<float, float>>&  points;
-    adaptor(const std::vector<std::pair<float, float>>&  points) : points(points) { }
+    const std::vector<std::vector<float>>&  points;
+    adaptor(const std::vector<std::vector<float>>&  points) : points(points) { }
 
     /// CRTP helper method
     //inline const Derived& derived() const { return obj; }
@@ -18,7 +18,12 @@ struct adaptor
     //  "if/else's" are actually solved at compile time.
     inline float kdtree_get_pt(const size_t idx, const size_t dim) const
     {
-        return (dim == 0)? points[idx].first: points[idx].second;
+        return points[idx][dim];
+        // if (dim==0)
+        // {
+        //     return points[idx]
+        // }
+        // return (dim == 0)? points[idx].first: points[idx].second;
     }
 
     // Optional bounding-box computation: return false to default to a standard bbox computation loop.
@@ -30,9 +35,9 @@ struct adaptor
 };
 
 
-auto get_query_point(const std::vector<std::pair<float, float>>& data, size_t index)
+auto get_query_point(const std::vector<std::vector<float>>& data, size_t index)
 {
-    return std::array<float, 2>({data[index].first, data[index].second});
+    return std::array<float, 3>({data[index][0], data[index][1],data[index][2]});
 }
 
 
@@ -44,7 +49,7 @@ auto sort_clusters(std::vector<std::vector<size_t>>& clusters)
     }
 }
 
-auto dbscan(const std::vector<std::pair<float, float>>& data, float eps, int min_pts)
+auto dbscan(const std::vector<std::vector<float>>& data, float eps, int min_pts)
 {
     eps *= eps;
     const auto adapt = adaptor(data);
