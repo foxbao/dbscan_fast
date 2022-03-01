@@ -6,8 +6,7 @@
 #include <sstream>
 #include <sys/time.h>
 
-#include "dbscan.hpp" //<-- include dbscan library
-
+#include "lib/include/dbscan.hpp" //<-- include dbscan library
 using namespace std;
 std::vector<std::string> splitWithStl(const std::string &str, const std::string &pattern)
 {
@@ -76,8 +75,10 @@ std::vector<std::vector<float>> openFile(char *filename)
 int main(int argc, char *argv[])
 {
 
-    int minPoints = 4;
-    float epsilon = 40;
+    DBSCAN db;
+
+    int minPoints = 100;
+    float epsilon = 0.35;
     std::vector<std::vector<float>> data;
 
     data = openFile("feature.txt");
@@ -85,7 +86,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 10; i++)
     {
         gettimeofday(&t1, NULL);
-        dbscan(data, epsilon, minPoints);
+        db.dbscan(data, epsilon, minPoints);
         gettimeofday(&t2, NULL);
         double deltaT = (t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec;
         std::cout << "time_comsumed:" << deltaT / 1000000 << std::endl;
